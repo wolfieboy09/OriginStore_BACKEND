@@ -14,9 +14,9 @@ CORS(app)
 def index():
     return "Hello!!"
 
-@app.route('/applacations', methods=['GET'])
-def applacations():
-    with open('apps/applacations.json', 'r') as f:
+@app.route('/applications', methods=['GET'])
+def applications():
+    with open('apps/applications.json', 'r') as f:
         data = json.load(f)
     return jsonify(data)
 
