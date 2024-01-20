@@ -2,10 +2,13 @@
 
 from flask import Flask
 from flask import jsonify
+from flask_cors import CORS
+
 import json
 
 
 app = Flask('originstorebackend')
+CORS(app)
 
 @app.route('/')
 def index():
