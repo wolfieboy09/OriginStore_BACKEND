@@ -15,13 +15,13 @@ CORS(app)
 app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY')
 jwt = JWTManager(app)
 
-# Dummy user for demonstration purposes
-users = {
-    'username': 'password'
-}
-
 def checkCreditentions(username, password) -> bool:
-     ...
+    with open('users/users.json', 'r') as f:
+         data = json.load(f)
+    for user in data:
+        if user.get("username") == username and user.get('password') == password: 
+            return True
+    return False
      
 def doesAccountAlreadyExist(username) -> bool:
     with open('users/users.json', 'r') as f:
