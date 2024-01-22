@@ -98,6 +98,14 @@ def applications():
         data = json.load(f)
     return jsonify(data)
 
+@app.route('/DEBUGGING/USERS')
+def users():
+    LOGGER.info("Got DEBUG")
+    with open('users/users.json', 'r') as f:
+        data = json.load(f)
+    return jsonify(data)
+
+
 @app.route('/account/new', methods=['POST'])
 def newAccount():
     username = request.json.get('username')
