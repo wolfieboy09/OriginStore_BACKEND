@@ -101,11 +101,11 @@ def newAccount():
         sha256_hash = hashlib.sha256()
         sha256_hash.update(password.encode('utf-8'))
         hashed_password = sha256_hash.hexdigest()
-
         with open('users/users.json', 'r') as f:
             data = json.load(f)
-
-        data.append({"username": username, "password": hashed_password})
+        if 'accounts' not in data:
+            data['accounts'] = []
+        data['accounts'].append({"username": username, "password": hashed_password})
 
         with open('users/users.json', 'w') as f:
             json.dump(data, f, indent=2)
@@ -113,6 +113,7 @@ def newAccount():
         return jsonify({"message": "ACCOUNT_CREATED"}), 201
     else:
         return jsonify({"error": "ACCOUNT_ALREADY_EXISTS"}), 409
+
 
 @app.route('/app/new', methods=['POST'])
 @jwt_required()
