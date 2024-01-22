@@ -83,7 +83,7 @@ def internal_server_error(error):
 
 @app.route('/')
 def index():
-    return "Hello!!"
+    return jsonify({"message": "Hello! This is the API for >> https://origin-store-app.vercel.app/ <<"})
 
 @limiter.limit("100 per minute")
 @app.route('/applications', methods=['GET'])
