@@ -8,6 +8,7 @@ from flask_limiter import Limiter
 import json
 import hashlib
 import os
+import LOGGER
 
 
 app = Flask('originstorebackend')
@@ -21,11 +22,14 @@ limiter = Limiter(app)
 
 
 def checkCreditentions(username, password) -> bool:
+    LOGGER.debug(f"Checking Creditentions of {username}")
     with open('users/users.json', 'r') as f:
          data = json.load(f)
     for user in data:
         if user.get("username") == username and user.get('password') == password: 
+            LOGGER.debug(f"User {username} VALIDATED")
             return True
+    LOGGER.debug(f"User {username} NOT VALIDATED")
     return False
      
 def doesAccountAlreadyExist(username) -> bool:
