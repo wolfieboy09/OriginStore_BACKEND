@@ -3,6 +3,8 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token
+from flask_limiter import Limiter
+
 import json
 import hashlib
 import os
@@ -13,7 +15,10 @@ CORS(app)
 
 # Configure JWT settings
 app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY')
+RATE_LIMIT = 100
 jwt = JWTManager(app)
+limiter = Limiter(app)
+
 
 def checkCreditentions(username, password) -> bool:
     with open('users/users.json', 'r') as f:
@@ -31,10 +36,56 @@ def doesAccountAlreadyExist(username) -> bool:
     return False
 
 
+
+@app.errorhandler(400)
+def bad_request(error):
+    response = jsonify({'error': 'BAD_REQUEST', "message": str(error.description)})
+    return response, 400
+
+@app.errorhandler(401)
+def unauthorized(error):
+    response = jsonify({'error': 'UNAUTHORIZED', "message": str(error.description)})
+    return response, 401
+
+@app.errorhandler(403)
+def forbidden(error):
+    response = jsonify({'error': 'FORBIDDEN', "message": str(error.description)})
+    return response, 403
+
+@app.errorhandler(404)
+def page_not_found(error):
+     return jsonify({"error": "PAGE_NOT_FOUND", "message": str(error.description)}), 404
+
+@app.errorhandler(405)
+def method_not_allowd(error):
+    return jsonify({'error': 'METHOD_NOT_ALLOWED', 'message': str(error.description)}), 405
+
+@app.errorhandler(406)
+def not_acceptable(error):
+    return jsonify({'error': 'NOT_ACCEPTABLE', 'message': str(error.description)}), 406
+
+@app.errorhandler(408)
+def timeout(error):
+    return jsonify({'error': 'REQUEST_TIMEOUT', 'message': str(error.description)}), 408
+
+@app.errorhandler(409)
+def conflict(error):
+    return jsonify({'error': 'CONFLICT', 'message': str(error.description)}), 409
+
+@app.errorhandler(429)
+def ratelimit_error(e):
+    return jsonify({"error": "RATELIMIT_EXCEEDED", "message": str(e.description), "extra": f"limit of {RATE_LIMIT} per minute"}), 429
+
+@app.errorhandler(500)
+def internal_server_error(error):
+    response = jsonify({'error': 'INTERNAL_SERVER_ERROR', "message": str(error.description)})
+    return response, 500
+
 @app.route('/')
 def index():
     return "Hello!!"
 
+@limiter.limit("100 per minute")
 @app.route('/applications', methods=['GET'])
 def applications():
     with open('apps/applications.json', 'r') as f:
