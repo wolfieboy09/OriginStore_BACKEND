@@ -125,6 +125,9 @@ def newApp():
         data['apps'].append(request.headers.get('App-Data'))
         with open('apps/applications.json', 'w') as f:
             json.dump(data, f)
-
+        return jsonify({"message": "APP_CREATED"}), 201
+    else:
+        return jsonify({"error": "INVALID_CREDENTIALS"}), 401  
+    
 if __name__ == '__main__':
     app.run('0.0.0.0', 8080, False)
