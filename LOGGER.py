@@ -8,6 +8,7 @@ colors = {
     'WARNING': Fore.YELLOW,
     'ERROR': Fore.RED,
     'CRITICAL': f"{Fore.RED}{Style.BRIGHT}",
+    'FATAL': f"{Fore.RED}{Style.BRIGHT}",
     'RESET': Fore.RESET
 }
 
@@ -26,3 +27,6 @@ def error(message):
     
 def critical(message):
     print(f"{colors['CRITICAL']}[CRITICAL] {message}{colors['RESET']}")
+
+def fatal(message):
+    print(f"{colors['FATAL']}[FATAL] {message}{colors['RESET']}")
