@@ -30,10 +30,12 @@ def checkCreditentions(username, password) -> bool:
      
 def doesAccountAlreadyExist(username) -> bool:
     with open('users/users.json', 'r') as f:
-        data = json.load(f)
+        data = json.loads(f.read())
     for user_info in data:
-        if user_info.get("username") == username: return True
+        if isinstance(user_info, dict) and user_info.get("username") == username:
+            return True
     return False
+
 
 
 
