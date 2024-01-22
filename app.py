@@ -34,11 +34,13 @@ def checkCreditentions(username, password) -> bool:
      
 def doesAccountAlreadyExist(username) -> bool:
     with open('users/users.json', 'r') as f:
-        data = json.loads(f.read())
-    for user_info in data:
-        if isinstance(user_info, dict) and user_info.get("username") == username:
-            return True
-    return False
+        data = json.load(f)
+        accounts = data.get("accounts", [])
+    existing_usernames = set()
+    for user_info in accounts:
+        if isinstance(user_info, dict):
+            existing_usernames.add(user_info.get("username", ""))
+    return username in existing_usernames
 
 
 
@@ -110,7 +112,6 @@ def users():
 def newAccount():
     username = request.json.get('username')
     password = request.json.get('password')
-
     if not doesAccountAlreadyExist(username):
         sha256_hash = hashlib.sha256()
         sha256_hash.update(password.encode('utf-8'))
