@@ -94,7 +94,7 @@ def internal_server_error(error):
 
 @app.errorhandler(ServerSelectionTimeoutError)
 def DB_timeout(error):
-    return jsonify({'error': 'SERVER_SELECTION_TIMEOUT_ERROR', 'message': "The Database took too long"}), 500
+    return jsonify({'error': 'SERVER_SELECTION_TIMEOUT_ERROR', 'message': "The Database timed out"}), 500
     
 
 @app.route('/')
