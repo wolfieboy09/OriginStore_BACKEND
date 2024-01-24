@@ -9,7 +9,7 @@ import json
 import hashlib
 import os
 
-# Files
+# Home-made files
 import LOGGER
 import database
 
