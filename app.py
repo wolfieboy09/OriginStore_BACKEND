@@ -8,7 +8,14 @@ from flask_limiter import Limiter
 import json
 import hashlib
 import os
+
+# Files
 import LOGGER
+import database
+
+# Errors
+from pymongo.errors import ServerSelectionTimeoutError
+
 
 
 app = Flask('originstorebackend')
@@ -16,9 +23,11 @@ CORS(app)
 
 # Configure JWT settings
 app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY')
-RATE_LIMIT = 100
 jwt = JWTManager(app)
 limiter = Limiter(app)
+RATE_LIMIT = 100
+
+
 
 
 def checkCreditentions(username, password) -> bool:
@@ -33,14 +42,8 @@ def checkCreditentions(username, password) -> bool:
     return False
      
 def doesAccountAlreadyExist(username) -> bool:
-    with open('users/users.json', 'r') as f:
-        data = json.load(f)
-        accounts = data.get("accounts", [])
-    existing_usernames = set()
-    for user_info in accounts:
-        if isinstance(user_info, dict):
-            existing_usernames.add(user_info.get("username", ""))
-    return username in existing_usernames
+    return True
+    
 
 
 
@@ -89,6 +92,11 @@ def internal_server_error(error):
     response = jsonify({'error': 'INTERNAL_SERVER_ERROR', "message": str(error.description)})
     return response, 500
 
+@app.errorhandler(ServerSelectionTimeoutError)
+def DB_timeout(error):
+    return jsonify({'error': 'SERVER_SELECTION_TIMEOUT_ERROR', 'message': "The Database took too long"}), 500
+    
+
 @app.route('/')
 def index():
     return jsonify({"message": "Hello! This is the API for >> https://origin-store-app.vercel.app/ <<"})
@@ -102,29 +110,19 @@ def applications():
 
 @app.route('/DEBUGGING/USERS')
 def users():
-    LOGGER.info("Got DEBUG")
+    LOGGER.info("Got DEBUG for USERS")
     with open('users/users.json', 'r') as f:
         data = json.load(f)
     return jsonify(data)
 
 
 @app.route('/account/new', methods=['POST'])
-def newAccount():
+def new_account():
     username = request.json.get('username')
     password = request.json.get('password')
     if not doesAccountAlreadyExist(username):
-        sha256_hash = hashlib.sha256()
-        sha256_hash.update(password.encode('utf-8'))
-        hashed_password = sha256_hash.hexdigest()
-        with open('users/users.json', 'r') as f:
-            data = json.load(f)
-        if 'accounts' not in data:
-            data['accounts'] = []
-        data['accounts'].append({"username": username, "password": hashed_password})
-
-        with open('users/users.json', 'w') as f:
-            json.dump(data, f, indent=2)
-
+            
+        
         return jsonify({"message": "ACCOUNT_CREATED"}), 201
     else:
         return jsonify({"error": "ACCOUNT_ALREADY_EXISTS"}), 409
@@ -135,7 +133,7 @@ def newAccount():
 def newApp():
     username = request.json.get('username')
     password = request.json.get('password')
-    if checkCreditentions(username, password):
+    if checkCreditentions(username, password):  
         with open('apps/applications.json', 'r') as f:
             data = json.load(f)
         data['apps'].append(request.headers.get('App-Data'))
@@ -144,6 +142,6 @@ def newApp():
         return jsonify({"message": "APP_CREATED"}), 201
     else:
         return jsonify({"error": "INVALID_CREDENTIALS"}), 401  
-    
+
 if __name__ == '__main__':
     app.run('0.0.0.0', 8080, False)
