@@ -14,7 +14,7 @@ def doesUserExist(username: str) -> bool:
     else: return False   
     
     
-def newApp(name: str, author: str, current_ver: float, description: str, author_link_types: list, links: list, required_ver: float) -> bool:
+def newApp(name: str, author: str, current_ver: float, description: str, author_link_types: list, links: list, required_ver: float, download_file: str) -> bool:
     app_coll = client.get_database()['OSLapps']
     INSERT = {
         "_id": ObjectId(),
@@ -24,7 +24,8 @@ def newApp(name: str, author: str, current_ver: float, description: str, author_
         "description": description,
         "author_link_types": f"{author_link_types}",
         "required_ver": f"{required_ver}",
-        "links": f"{links}"
+        "links": f"{links}",
+        "download_file": f"{download_file}"
         }
     app_coll.insert_one(INSERT)
     return True
@@ -32,7 +33,7 @@ def newApp(name: str, author: str, current_ver: float, description: str, author_
 
 def getAllApps():
     collection = client.get_database()['OSLapps']
-    result = collection.find({}, {'_id': 1, 'name': 1, 'author': 1, 'current_var': 1, 'description': 1, 'author_link_types': 1, 'links': 1, 'required_ver': 1})
+    result = collection.find({}, {'_id': 1, 'name': 1, 'author': 1, 'current_var': 1, 'description': 1, 'author_link_types': 1, 'links': 1, 'required_ver': 1, 'download_file': 1})
     apps_list = []
     for document in result:
         apps_list.append(document)
