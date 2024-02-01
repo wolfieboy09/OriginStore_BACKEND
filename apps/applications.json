@@ -1,22 +1,14 @@
 {
     "apps": [
         {
-            "name": "awesome-app",
-            "curr_ver": "3.5",
-            "required_ver": "500",
-            "authors": ["CodeMaster123", "DesignGuru"],
-            "author_link_types": ["github", "portfolio"],
-            "links": ["https://awesome-app.com", "https://github.com/CodeMaster123/awesome-app"],
-            "description": "Experience the awesomeness with this feature-rich application. Packed with innovative features and a user-friendly interface, it's a must-try for tech enthusiasts."
-        },
-        {
-            "name": "productivity-tool",
-            "curr_ver": "2.1",
-            "required_ver": "300",
-            "authors": ["EfficiencyPro"],
-            "author_link_types": ["linkedin"],
-            "links": ["https://linkedin.com/in/EfficiencyPro"],
-            "description": "Boost your productivity with this powerful tool. Stay organized, manage tasks effortlessly, and enhance your efficiency in both work and personal projects."
+            "name": "Chatroom",
+            "curr_ver": "1.0",
+            "required_ver": "4.6.8",
+            "authors": ["Costikoooo"],
+            "author_link_types": ["none"],
+            "links": ["none"],
+            "description": "Talk with people. BETA",
+            "download_file": "apps/chatroom.app"
         }
     ]
 }
